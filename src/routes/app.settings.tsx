@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Trash2, UserPlus, LogOut, Link2, Bell } from "lucide-react";
+import { Trash2, UserPlus, LogOut, Link2, Bell, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveMember, setActiveMember } from "@/lib/device";
 import { useI18n, type Lang } from "@/lib/i18n";
@@ -42,6 +42,9 @@ function SettingsPage() {
   const [newPhone, setNewPhone] = useState("");
   const [includeLink, setIncludeLink] = useState(true);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [installed, setInstalled] = useState(false);
+  const [showInstallHint, setShowInstallHint] = useState(false);
 
   async function load() {
     if (!m) return;
@@ -57,6 +60,26 @@ function SettingsPage() {
     load();
     if (typeof window !== "undefined" && "Notification" in window) {
       setNotifEnabled(Notification.permission === "granted");
+    }
+    if (typeof window !== "undefined") {
+      const standalone =
+        window.matchMedia?.("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone === true;
+      setInstalled(!!standalone);
+      const handler = (e: Event) => {
+        e.preventDefault();
+        setInstallPrompt(e);
+      };
+      window.addEventListener("beforeinstallprompt", handler);
+      const onInstalled = () => {
+        setInstalled(true);
+        setInstallPrompt(null);
+      };
+      window.addEventListener("appinstalled", onInstalled);
+      return () => {
+        window.removeEventListener("beforeinstallprompt", handler);
+        window.removeEventListener("appinstalled", onInstalled);
+      };
     }
   }, []);
 
@@ -123,6 +146,21 @@ function SettingsPage() {
     setNotifEnabled(perm === "granted");
     if (perm === "granted") toast.success(t("notificationsOn"));
   }
+
+  async function installApp() {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      if (outcome === "accepted") setInstalled(true);
+      setInstallPrompt(null);
+      return;
+    }
+    setShowInstallHint((v) => !v);
+  }
+
+  const isIos =
+    typeof navigator !== "undefined" &&
+    /iphone|ipad|ipod/i.test(navigator.userAgent);
 
   const buildTime = (() => {
     try {
@@ -227,6 +265,20 @@ function SettingsPage() {
           <Bell className="w-4 h-4 me-2" />
           {notifEnabled ? t("notificationsOn") : t("enableNotifications")}
         </Button>
+        <Button
+          variant="outline"
+          onClick={installApp}
+          disabled={installed}
+          className="w-full"
+        >
+          <Download className="w-4 h-4 me-2" />
+          {installed ? t("installed") : t("installApp")}
+        </Button>
+        {showInstallHint && !installed && (
+          <p className="text-xs text-muted-foreground rounded-lg bg-background border border-border p-3">
+            {isIos ? t("installIosHint") : t("installAndroidHint")}
+          </p>
+        )}
         <div className="flex items-center justify-between">
           <Label>{t("language")}</Label>
           <Select value={lang} onValueChange={(v) => setLang(v as Lang)}>
