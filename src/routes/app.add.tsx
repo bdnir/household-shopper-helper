@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveMember } from "@/lib/device";
@@ -33,11 +33,13 @@ function AddItemPage() {
 
   if (!m) return null;
 
-  function toggle(name: string) {
+  function addItem(name: string) {
+    setSelected((s) => new Set(s).add(name));
+  }
+  function removeItem(name: string) {
     setSelected((s) => {
       const n = new Set(s);
-      if (n.has(name)) n.delete(name);
-      else n.add(name);
+      n.delete(name);
       return n;
     });
   }
@@ -105,9 +107,14 @@ function AddItemPage() {
         {selected.size > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
             {Array.from(selected).map((n) => (
-              <span key={n} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                {n}
-              </span>
+              <button
+                key={n}
+                onClick={() => removeItem(n)}
+                className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20"
+                title="✕"
+              >
+                {n} ✕
+              </button>
             ))}
           </div>
         )}
@@ -126,7 +133,7 @@ function AddItemPage() {
               return (
                 <button
                   key={r.id}
-                  onClick={() => toggle(r.name)}
+                  onClick={() => (on ? removeItem(r.name) : addItem(r.name))}
                   className={`flex items-center justify-between p-3 rounded-xl border-2 transition text-start ${
                     on
                       ? "border-primary bg-primary/10 text-primary"
@@ -134,13 +141,7 @@ function AddItemPage() {
                   }`}
                 >
                   <span className="font-medium truncate">{r.name}</span>
-                  <span
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center text-xs ${
-                      on ? "bg-primary border-primary text-primary-foreground" : "border-border"
-                    }`}
-                  >
-                    {on ? "✓" : ""}
-                  </span>
+                  {on && <span className="text-primary text-sm">✓</span>}
                 </button>
               );
             })}
