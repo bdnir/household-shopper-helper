@@ -53,6 +53,10 @@ const DICT = {
     copyInvite: "העתק קישור הזמנה",
     inviteCopied: "הקישור הועתק",
     inviteSms: "שלח דרך SMS",
+    installApp: "התקן כאפליקציה",
+    installed: "האפליקציה הותקנה",
+    installIosHint: "באייפון: הקש על כפתור השיתוף בספארי ואז 'הוסף למסך הבית'",
+    installAndroidHint: "באנדרואיד: פתח את התפריט של הדפדפן ובחר 'הוסף למסך הבית'",
   },
   en: {
     appName: "Family Cart",
@@ -104,6 +108,10 @@ const DICT = {
     copyInvite: "Copy invite link",
     inviteCopied: "Invite copied",
     inviteSms: "Share via SMS",
+    installApp: "Install as app",
+    installed: "App installed",
+    installIosHint: "On iPhone: tap the Share button in Safari, then 'Add to Home Screen'",
+    installAndroidHint: "On Android: open the browser menu and choose 'Add to Home screen'",
   },
 } as const;
 
