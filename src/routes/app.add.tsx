@@ -127,21 +127,21 @@ function AddItemPage() {
         {recent.length === 0 ? (
           <p className="text-sm text-muted-foreground">—</p>
         ) : (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {recent.map((r) => {
               const on = selected.has(r.name);
               return (
                 <button
                   key={r.id}
                   onClick={() => (on ? removeItem(r.name) : addItem(r.name))}
-                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition text-start ${
+                  className={`flex items-center justify-between gap-1 px-2 py-2 rounded-lg border-2 transition text-start text-sm ${
                     on
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card hover:border-primary/40"
                   }`}
                 >
                   <span className="font-medium truncate">{r.name}</span>
-                  {on && <span className="text-primary text-sm">✓</span>}
+                  {on && <span className="text-primary text-xs shrink-0">✓</span>}
                 </button>
               );
             })}
