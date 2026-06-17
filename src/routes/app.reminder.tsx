@@ -70,7 +70,7 @@ function ReminderPage() {
         {presets.map((p) => (
           <button
             key={p}
-            onClick={() => send(p)}
+            onClick={() => setText(p)}
             className="w-full text-start p-4 bg-card rounded-xl border border-border hover:border-accent transition shadow-sm"
           >
             {p}
