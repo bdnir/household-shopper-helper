@@ -138,27 +138,27 @@ function MainPage() {
             {items.map((it) => (
               <li
                 key={it.id}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition ${
+                onClick={() => togglePurchased(it)}
+                className={`flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer select-none ${
                   it.status === "purchased"
                     ? "bg-success/10 border-success/30 text-muted-foreground"
                     : "bg-background border-border"
                 }`}
               >
-                <button
-                  onClick={() => togglePurchased(it)}
+                <span
                   className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition ${
                     it.status === "purchased" ? "bg-success border-success" : "border-border"
                   }`}
                   aria-label={t("purchased")}
                 >
                   {it.status === "purchased" && <Check className="w-4 h-4 text-success-foreground" />}
-                </button>
+                </span>
                 <div className="flex-1">
                   <p className={`font-medium ${it.status === "purchased" ? "line-through" : ""}`}>{it.name}</p>
                   <p className="text-xs text-muted-foreground">{it.added_by_name}</p>
                 </div>
                 <button
-                  onClick={() => deleteItem(it.id)}
+                  onClick={(e) => { e.stopPropagation(); deleteItem(it.id); }}
                   className="w-8 h-8 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive flex items-center justify-center"
                 >
                   <Trash2 className="w-4 h-4" />
