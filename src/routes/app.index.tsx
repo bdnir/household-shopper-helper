@@ -99,10 +99,12 @@ function MainPage() {
   }
 
   async function deleteItem(id: string) {
+    setItems((prev) => prev.filter((x) => x.id !== id));
     await supabase.from("items").delete().eq("id", id);
   }
 
   async function deleteMessage(id: string) {
+    setMessages((prev) => prev.filter((x) => x.id !== id));
     await supabase.from("messages").delete().eq("id", id);
   }
 
