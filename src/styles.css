@@ -165,3 +165,18 @@
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
 }
+
+
+/* Hide Lovable / GPT Engineer platform branding badges */
+[class*="lovable-"], 
+[id*="lovable-"],
+.gpt-engineer-badge,
+#gpt-engineer-brand,
+div[style*="position: fixed"][style*="bottom:"][style*="z-index: 2147483647"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
