@@ -26,7 +26,7 @@ type Message = {
 };
 
 function MainPage() {
-  const { t } = useI18n();
+  const { t, dir } = useI18n();
   const [items, setItems] = useState<Item[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [expandedMsg, setExpandedMsg] = useState<string | null>(null);
