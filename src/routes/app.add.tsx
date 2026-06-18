@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveMember } from "@/lib/device";
 import { useI18n } from "@/lib/i18n";
@@ -42,6 +42,11 @@ function AddItemPage() {
       n.delete(name);
       return n;
     });
+  }
+
+  async function deleteRecent(id: string) {
+    setRecent((prev) => prev.filter((r) => r.id !== id));
+    await supabase.from("recent_items").delete().eq("id", id);
   }
 
   async function sendSelected() {
@@ -131,18 +136,29 @@ function AddItemPage() {
             {recent.map((r) => {
               const on = selected.has(r.name);
               return (
-                <button
+                <div
                   key={r.id}
-                  onClick={() => (on ? removeItem(r.name) : addItem(r.name))}
-                  className={`flex items-center justify-between gap-1 px-2 py-2 rounded-lg border-2 transition text-start text-sm ${
+                  className={`relative flex items-center gap-1 px-2 py-2 rounded-lg border-2 transition text-sm ${
                     on
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card hover:border-primary/40"
                   }`}
                 >
-                  <span className="font-medium truncate">{r.name}</span>
+                  <div
+                    className="flex-1 cursor-pointer truncate font-medium"
+                    onClick={() => (on ? removeItem(r.name) : addItem(r.name))}
+                  >
+                    {r.name}
+                  </div>
                   {on && <span className="text-primary text-xs shrink-0">✓</span>}
-                </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteRecent(r.id); }}
+                    className="w-5 h-5 rounded-full bg-muted text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex items-center justify-center shrink-0"
+                    title={t("delete")}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
               );
             })}
           </div>

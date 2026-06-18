@@ -26,7 +26,7 @@ type Message = {
 };
 
 function MainPage() {
-  const { t } = useI18n();
+  const { t, dir } = useI18n();
   const [items, setItems] = useState<Item[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [expandedMsg, setExpandedMsg] = useState<string | null>(null);
@@ -121,7 +121,7 @@ function MainPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4 pt-6 space-y-6">
+    <div className="max-w-5xl mx-auto p-4 pt-6 space-y-6">
       <header className="flex items-center justify-between">
         <div>
           <p className="text-xs text-muted-foreground">{m.groupName}</p>
@@ -132,94 +132,96 @@ function MainPage() {
         </div>
       </header>
 
-      <section className="bg-card rounded-2xl shadow-[var(--shadow-card)] p-4">
-        {items.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">{t("empty")}</p>
-        ) : (
-          <ul className="space-y-2">
-            {items.map((it) => (
-              <li
-                key={it.id}
-                onClick={() => togglePurchased(it)}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer select-none ${
-                  it.status === "purchased"
-                    ? "bg-success/10 border-success/30 text-muted-foreground"
-                    : "bg-background border-border"
-                }`}
-              >
-                <span
-                  className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition ${
-                    it.status === "purchased" ? "bg-success border-success" : "border-border"
-                  }`}
-                  aria-label={t("purchased")}
-                >
-                  {it.status === "purchased" && <Check className="w-4 h-4 text-success-foreground" />}
-                </span>
-                <div className="flex-1">
-                  <p className={`font-medium ${it.status === "purchased" ? "line-through" : ""}`}>{it.name}</p>
-                  <p className="text-xs text-muted-foreground">{it.added_by_name}</p>
-                </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); deleteItem(it.id); }}
-                  className="w-8 h-8 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive flex items-center justify-center"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-lg font-bold flex items-center gap-2 mb-3">
-          <MessageSquare className="w-5 h-5 text-accent" />
-          {t("messages")}
-        </h2>
-        {messages.length === 0 ? (
-          <p className="text-center text-muted-foreground py-6">{t("emptyMessages")}</p>
-        ) : (
-          <ul className="space-y-2">
-            {messages.map((msg) => {
-              const isMine = msg.from_member_id === m.memberId;
-              const open = expandedMsg === msg.id;
-              return (
+      <div className={`flex flex-col md:flex-row gap-6 ${dir === "rtl" ? "md:flex-row-reverse" : ""}`}>
+        <section className="flex-1 min-w-0 bg-card rounded-2xl shadow-[var(--shadow-card)] p-4">
+          {items.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">{t("empty")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {items.map((it) => (
                 <li
-                  key={msg.id}
-                  onClick={() => openMessage(msg)}
-                  className="bg-card rounded-2xl p-3 shadow-sm cursor-pointer hover:shadow-md transition"
+                  key={it.id}
+                  onClick={() => togglePurchased(it)}
+                  className={`flex items-center gap-3 p-3 rounded-xl border transition cursor-pointer select-none ${
+                    it.status === "purchased"
+                      ? "bg-success/10 border-success/30 text-muted-foreground"
+                      : "bg-background border-border"
+                  }`}
                 >
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="text-sm font-semibold text-accent">{msg.from_name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(msg.created_at).toLocaleString()}
-                    </span>
+                  <span
+                    className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition ${
+                      it.status === "purchased" ? "bg-success border-success" : "border-border"
+                    }`}
+                    aria-label={t("purchased")}
+                  >
+                    {it.status === "purchased" && <Check className="w-4 h-4 text-success-foreground" />}
+                  </span>
+                  <div className="flex-1">
+                    <p className={`font-medium ${it.status === "purchased" ? "line-through" : ""}`}>{it.name}</p>
+                    <p className="text-xs text-muted-foreground">{it.added_by_name}</p>
                   </div>
-                  <p className={`mt-1 ${open ? "text-base" : "text-sm line-clamp-2"}`}>{msg.body}</p>
-                  {open && (
-                    <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">
-                        {t("readBy")}: {(reads[msg.id] ?? []).map((r) => r.name).filter(Boolean).join(", ") || "—"}
-                      </span>
-                      {isMine && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteMessage(msg.id);
-                          }}
-                          className="text-destructive hover:underline"
-                        >
-                          {t("delete")}
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteItem(it.id); }}
+                    className="w-8 h-8 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive flex items-center justify-center"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="flex-1 min-w-0">
+          <h2 className="text-lg font-bold flex items-center gap-2 mb-3">
+            <MessageSquare className="w-5 h-5 text-accent" />
+            {t("messages")}
+          </h2>
+          {messages.length === 0 ? (
+            <p className="text-center text-muted-foreground py-6">{t("emptyMessages")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {messages.map((msg) => {
+                const isMine = msg.from_member_id === m.memberId;
+                const open = expandedMsg === msg.id;
+                return (
+                  <li
+                    key={msg.id}
+                    onClick={() => openMessage(msg)}
+                    className="bg-card rounded-2xl p-3 shadow-sm cursor-pointer hover:shadow-md transition"
+                  >
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="text-sm font-semibold text-accent">{msg.from_name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(msg.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <p className={`mt-1 ${open ? "text-base" : "text-sm line-clamp-2"}`}>{msg.body}</p>
+                    {open && (
+                      <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">
+                          {t("readBy")}: {(reads[msg.id] ?? []).map((r) => r.name).filter(Boolean).join(", ") || "—"}
+                        </span>
+                        {isMine && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteMessage(msg.id);
+                            }}
+                            className="text-destructive hover:underline"
+                          >
+                            {t("delete")}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
