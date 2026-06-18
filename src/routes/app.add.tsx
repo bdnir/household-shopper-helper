@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveMember } from "@/lib/device";
 import { useI18n } from "@/lib/i18n";
@@ -42,6 +42,11 @@ function AddItemPage() {
       n.delete(name);
       return n;
     });
+  }
+
+  async function deleteRecent(id: string) {
+    setRecent((prev) => prev.filter((r) => r.id !== id));
+    await supabase.from("recent_items").delete().eq("id", id);
   }
 
   async function sendSelected() {
