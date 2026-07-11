@@ -4,6 +4,12 @@ import { Trash2, UserPlus, LogOut, Link2, Bell, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveMember, setActiveMember } from "@/lib/device";
 import { useI18n, type Lang } from "@/lib/i18n";
+import {
+  getPushStatus,
+  subscribeToPush,
+  unsubscribeFromPush,
+  type PushStatus,
+} from "@/lib/push";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +48,7 @@ function SettingsPage() {
   const [newPhone, setNewPhone] = useState("");
   const [includeLink, setIncludeLink] = useState(true);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  const [pushStatus, setPushStatusState] = useState<PushStatus>("default");
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [installed, setInstalled] = useState(false);
   const [showInstallHint, setShowInstallHint] = useState(false);
@@ -61,6 +68,7 @@ function SettingsPage() {
     if (typeof window !== "undefined" && "Notification" in window) {
       setNotifEnabled(Notification.permission === "granted");
     }
+    getPushStatus().then(setPushStatusState);
     if (typeof window !== "undefined") {
       const standalone =
         window.matchMedia?.("(display-mode: standalone)").matches ||
@@ -138,13 +146,21 @@ function SettingsPage() {
   }
 
   async function enableNotifications() {
-    if (!("Notification" in window)) {
-      toast.error("Not supported");
-      return;
-    }
-    const perm = await Notification.requestPermission();
-    setNotifEnabled(perm === "granted");
-    if (perm === "granted") toast.success(t("notificationsOn"));
+    const ok = await subscribeToPush();
+    const s = await getPushStatus();
+    setPushStatusState(s);
+    setNotifEnabled(s === "subscribed");
+    if (ok) toast.success(t("pushOn"));
+    else if (s === "denied") toast.error(t("pushDenied"));
+    else if (s === "ios-needs-pwa") toast.error(t("pushIosNeedsPwa"));
+    else if (s === "unsupported") toast.error(t("pushUnsupported"));
+  }
+
+  async function disableNotifications() {
+    await unsubscribeFromPush();
+    const s = await getPushStatus();
+    setPushStatusState(s);
+    setNotifEnabled(false);
   }
 
   async function installApp() {
@@ -261,9 +277,22 @@ function SettingsPage() {
           <Link2 className="w-4 h-4 me-2" />
           {t("copyInvite")}
         </Button>
-        <Button variant="outline" onClick={enableNotifications} className="w-full">
+        <Button
+          variant="outline"
+          onClick={pushStatus === "subscribed" ? disableNotifications : enableNotifications}
+          className="w-full"
+          disabled={pushStatus === "unsupported"}
+        >
           <Bell className="w-4 h-4 me-2" />
-          {notifEnabled ? t("notificationsOn") : t("enableNotifications")}
+          {pushStatus === "subscribed"
+            ? t("pushOn")
+            : pushStatus === "denied"
+              ? t("pushDenied")
+              : pushStatus === "ios-needs-pwa"
+                ? t("pushIosNeedsPwa")
+                : pushStatus === "unsupported"
+                  ? t("pushUnsupported")
+                  : t("pushEnable")}
         </Button>
         <Button
           variant="outline"
