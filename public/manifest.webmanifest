@@ -1,6 +1,6 @@
 {
-  "name": "Family Cart",
-  "short_name": "Family Cart",
+  "name": "Super-Helper",
+  "short_name": "Super-Helper",
   "description": "Sync your family's grocery list",
   "start_url": "/",
   "scope": "/",
