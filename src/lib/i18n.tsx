@@ -62,6 +62,13 @@ const DICT = {
     installed: "האפליקציה הותקנה",
     installIosHint: "באייפון: הקש על כפתור השיתוף בספארי ואז 'הוסף למסך הבית'",
     installAndroidHint: "באנדרואיד: פתח את התפריט של הדפדפן ובחר 'הוסף למסך הבית'",
+    pushEnable: "אפשר התראות דחיפה",
+    pushOn: "התראות דחיפה מופעלות",
+    pushDenied: "התראות חסומות בדפדפן",
+    pushUnsupported: "הדפדפן לא תומך בהתראות דחיפה",
+    pushIosBanner: "כדי לקבל התראות באייפון, הוסיפו את האפליקציה למסך הבית: הקש על שיתוף ואז 'הוסף למסך הבית'",
+    pushIosNeedsPwa: "התקינו למסך הבית כדי לאפשר התראות",
+    dismiss: "סגור",
   },
   en: {
     appName: "Family Cart",
@@ -122,6 +129,13 @@ const DICT = {
     installed: "App installed",
     installIosHint: "On iPhone: tap the Share button in Safari, then 'Add to Home Screen'",
     installAndroidHint: "On Android: open the browser menu and choose 'Add to Home screen'",
+    pushEnable: "Enable push notifications",
+    pushOn: "Push notifications on",
+    pushDenied: "Notifications blocked in browser",
+    pushUnsupported: "This browser doesn't support push",
+    pushIosBanner: "To get notifications on iPhone, add this app to your Home Screen: tap Share, then 'Add to Home Screen'",
+    pushIosNeedsPwa: "Install to Home Screen to enable notifications",
+    dismiss: "Dismiss",
   },
 } as const;
 

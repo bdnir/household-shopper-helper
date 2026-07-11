@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Outlet, useNavigate, Link, useLocation } from "@tanstack/react-router";
-import { Plus, Bell, Settings as SettingsIcon, Home } from "lucide-react";
+import { Plus, Bell, Settings as SettingsIcon, Home, X } from "lucide-react";
 import { getActiveMember } from "@/lib/device";
 import { useI18n } from "@/lib/i18n";
+import { registerPushServiceWorker, subscribeToPush, getPushStatus, isIos, isStandalone } from "@/lib/push";
 
 export const Route = createFileRoute("/app")({
+  ssr: false,
   component: AppLayout,
 });
 
@@ -12,15 +14,47 @@ function AppLayout() {
   const navigate = useNavigate();
   const { t, dir } = useI18n();
   const loc = useLocation();
+  const [showIosBanner, setShowIosBanner] = useState(false);
 
   useEffect(() => {
     if (!getActiveMember()) navigate({ to: "/" });
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      await registerPushServiceWorker();
+      // Best-effort auto-subscribe if permission already granted
+      const status = await getPushStatus();
+      if (status === "granted-unsubscribed") {
+        subscribeToPush();
+      }
+      // Show iOS install-to-home-screen hint once
+      if (isIos() && !isStandalone() && !localStorage.getItem("fg.iosPushBannerDismissed")) {
+        setShowIosBanner(true);
+      }
+    })();
   }, []);
 
   const isActive = (p: string) => loc.pathname === p;
 
   return (
     <div className="min-h-screen flex flex-col bg-background" dir={dir}>
+      {showIosBanner && (
+        <div className="bg-accent/15 text-accent-foreground border-b border-accent/30 px-4 py-2 flex items-start gap-2 text-sm">
+          <Bell className="w-4 h-4 mt-0.5 shrink-0 text-accent" />
+          <p className="flex-1">{t("pushIosBanner")}</p>
+          <button
+            onClick={() => {
+              localStorage.setItem("fg.iosPushBannerDismissed", "1");
+              setShowIosBanner(false);
+            }}
+            className="text-muted-foreground hover:text-foreground"
+            aria-label={t("dismiss")}
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
       <main className="flex-1 pb-24">
         <Outlet />
       </main>
