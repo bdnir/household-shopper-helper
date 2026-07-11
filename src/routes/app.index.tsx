@@ -113,7 +113,7 @@ function MainPage() {
           created_by_member_id: it.is_private ? it.added_by_member_id : null,
           last_used_at: new Date().toISOString(),
         },
-        { onConflict: "group_id,name,is_private,created_by_member_id" },
+        { onConflict: "group_id,name,is_private,owner_key" },
       );
     }
   }
