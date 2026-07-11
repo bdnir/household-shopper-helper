@@ -34,7 +34,7 @@ function Landing() {
 
   async function submit() {
     if (!groupName.trim() || !name.trim() || !phone.trim()) {
-      toast.error(t("yes") + " 🙏");
+      toast.error(t("fillAllFields"));
       return;
     }
     setBusy(true);
@@ -59,7 +59,7 @@ function Landing() {
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle();
-        if (!g) throw new Error("Group not found");
+        if (!g) throw new Error(t("groupNotFound"));
         groupId = g.id;
       }
 
@@ -148,7 +148,12 @@ function Landing() {
           <div className="space-y-3">
             <div>
               <Label htmlFor="g">{t("groupName")}</Label>
-              <Input id="g" value={groupName} onChange={(e) => setGroupName(e.target.value)} disabled={!!search.group} />
+              <Input
+                id="g"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                disabled={!!search.group}
+              />
             </div>
             <div>
               <Label htmlFor="n">{t("yourName")}</Label>
