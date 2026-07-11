@@ -33,9 +33,6 @@ function ReminderPage() {
       toast.error(error.message);
       return;
     }
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(m!.groupName, { body: trimmed });
-    }
     toast.success("✓");
     navigate({ to: "/app" });
   }
