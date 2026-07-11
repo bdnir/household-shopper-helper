@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getActiveMember } from "@/lib/device";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/add")({
   component: AddItemPage,
 });
 
+type RecentItem = {
+  id: string;
+  name: string;
+  is_private: boolean;
+  created_by_member_id: string | null;
+};
+
 function AddItemPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const m = getActiveMember();
-  const [recent, setRecent] = useState<{ id: string; name: string }[]>([]);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [recent, setRecent] = useState<RecentItem[]>([]);
+  const [selected, setSelected] = useState<Map<string, boolean>>(new Map());
   const [manual, setManual] = useState("");
+  const [manualPrivate, setManualPrivate] = useState(false);
 
   useEffect(() => {
     if (!m) return;
@@ -26,19 +36,20 @@ function AddItemPage() {
       .from("recent_items")
       .select()
       .eq("group_id", m.groupId)
+      .or(`is_private.eq.false,created_by_member_id.eq.${m.memberId}`)
       .order("last_used_at", { ascending: false })
       .limit(30)
-      .then(({ data }) => setRecent(data ?? []));
+      .then(({ data }) => setRecent((data ?? []) as RecentItem[]));
   }, []);
 
   if (!m) return null;
 
-  function addItem(name: string) {
-    setSelected((s) => new Set(s).add(name));
+  function addItem(name: string, isPrivate: boolean) {
+    setSelected((s) => new Map(s).set(name, isPrivate));
   }
   function removeItem(name: string) {
     setSelected((s) => {
-      const n = new Set(s);
+      const n = new Map(s);
       n.delete(name);
       return n;
     });
@@ -54,26 +65,32 @@ function AddItemPage() {
       toast.error(t("itemName"));
       return;
     }
-    const names = Array.from(selected);
-    if (manual.trim()) names.push(manual.trim());
-    const rows = names.map((name) => ({
+    const entries = Array.from(selected.entries());
+    if (manual.trim()) entries.push([manual.trim(), manualPrivate]);
+
+    const rows = entries.map(([name, isPrivate]) => ({
       group_id: m!.groupId,
       name,
       added_by_name: m!.name,
       added_by_member_id: m!.memberId,
+      is_private: isPrivate,
     }));
     const { error } = await supabase.from("items").insert(rows);
     if (error) {
       toast.error(error.message);
       return;
     }
-    await supabase
-      .from("recent_items")
-      .upsert(
-        names.map((n) => ({ group_id: m!.groupId, name: n, last_used_at: new Date().toISOString() })),
-        { onConflict: "group_id,name" }
-      );
-    toast.success(`+${names.length}`);
+    await supabase.from("recent_items").upsert(
+      entries.map(([name, isPrivate]) => ({
+        group_id: m!.groupId,
+        name,
+        is_private: isPrivate,
+        created_by_member_id: isPrivate ? m!.memberId : null,
+        last_used_at: new Date().toISOString(),
+      })),
+      { onConflict: "group_id,name,is_private,created_by_member_id" },
+    );
+    toast.success(`+${entries.length}`);
     navigate({ to: "/app" });
   }
 
@@ -92,8 +109,9 @@ function AddItemPage() {
             onChange={(e) => setManual(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && manual.trim()) {
-                setSelected((s) => new Set(s).add(manual.trim()));
+                setSelected((s) => new Map(s).set(manual.trim(), manualPrivate));
                 setManual("");
+                setManualPrivate(false);
               }
             }}
           />
@@ -101,23 +119,37 @@ function AddItemPage() {
             variant="outline"
             onClick={() => {
               if (manual.trim()) {
-                setSelected((s) => new Set(s).add(manual.trim()));
+                setSelected((s) => new Map(s).set(manual.trim(), manualPrivate));
                 setManual("");
+                setManualPrivate(false);
               }
             }}
           >
             <Plus className="w-4 h-4" />
           </Button>
         </div>
+
+        <div className="mt-3 flex items-center gap-2">
+          <Checkbox
+            id="private-item"
+            checked={manualPrivate}
+            onCheckedChange={(c) => setManualPrivate(c === true)}
+          />
+          <Label htmlFor="private-item" className="text-sm text-muted-foreground cursor-pointer">
+            {t("privateItem")}
+          </Label>
+        </div>
+
         {selected.size > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
-            {Array.from(selected).map((n) => (
+            {Array.from(selected.entries()).map(([n, isPrivate]) => (
               <button
                 key={n}
                 onClick={() => removeItem(n)}
-                className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20"
+                className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20"
                 title="✕"
               >
+                {isPrivate && <Lock className="w-3 h-3" />}
                 {n} ✕
               </button>
             ))}
@@ -145,14 +177,23 @@ function AddItemPage() {
                   }`}
                 >
                   <div
-                    className="flex-1 cursor-pointer truncate font-medium"
-                    onClick={() => (on ? removeItem(r.name) : addItem(r.name))}
+                    className="flex-1 cursor-pointer truncate font-medium flex items-center gap-1"
+                    onClick={() => (on ? removeItem(r.name) : addItem(r.name, r.is_private))}
                   >
-                    {r.name}
+                    {r.is_private && (
+                      <Lock
+                        className="w-3 h-3 shrink-0 text-muted-foreground"
+                        aria-label={t("privateBadge")}
+                      />
+                    )}
+                    <span className="truncate">{r.name}</span>
                   </div>
                   {on && <span className="text-primary text-xs shrink-0">✓</span>}
                   <button
-                    onClick={(e) => { e.stopPropagation(); deleteRecent(r.id); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteRecent(r.id);
+                    }}
                     className="w-5 h-5 rounded-full bg-muted text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex items-center justify-center shrink-0"
                     title={t("delete")}
                   >
