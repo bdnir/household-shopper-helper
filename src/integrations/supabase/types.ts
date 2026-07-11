@@ -39,6 +39,7 @@ export type Database = {
           created_at: string
           group_id: string
           id: string
+          is_private: boolean
           name: string
           purchased_at: string | null
           status: Database["public"]["Enums"]["item_status"]
@@ -49,6 +50,7 @@ export type Database = {
           created_at?: string
           group_id: string
           id?: string
+          is_private?: boolean
           name: string
           purchased_at?: string | null
           status?: Database["public"]["Enums"]["item_status"]
@@ -59,6 +61,7 @@ export type Database = {
           created_at?: string
           group_id?: string
           id?: string
+          is_private?: boolean
           name?: string
           purchased_at?: string | null
           status?: Database["public"]["Enums"]["item_status"]
@@ -201,24 +204,37 @@ export type Database = {
       }
       recent_items: {
         Row: {
+          created_by_member_id: string | null
           group_id: string
           id: string
+          is_private: boolean
           last_used_at: string
           name: string
         }
         Insert: {
+          created_by_member_id?: string | null
           group_id: string
           id?: string
+          is_private?: boolean
           last_used_at?: string
           name: string
         }
         Update: {
+          created_by_member_id?: string | null
           group_id?: string
           id?: string
+          is_private?: boolean
           last_used_at?: string
           name?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "recent_items_created_by_member_id_fkey"
+            columns: ["created_by_member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "recent_items_group_id_fkey"
             columns: ["group_id"]
