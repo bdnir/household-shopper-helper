@@ -88,7 +88,7 @@ function AddItemPage() {
         created_by_member_id: isPrivate ? m!.memberId : null,
         last_used_at: new Date().toISOString(),
       })),
-      { onConflict: "group_id,name,is_private,created_by_member_id" },
+      { onConflict: "group_id,name,is_private,owner_key" },
     );
     toast.success(`+${entries.length}`);
     navigate({ to: "/app" });
