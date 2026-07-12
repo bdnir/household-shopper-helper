@@ -128,6 +128,13 @@ function MainPage() {
     await supabase.from("messages").delete().eq("id", id);
   }
 
+  async function clearAllMessages() {
+    if (!m) return;
+    if (!confirm(t("confirmClearAll"))) return;
+    setMessages([]);
+    await supabase.from("messages").delete().eq("group_id", m.groupId);
+  }
+
   async function openMessage(msg: Message) {
     if (expandedMsg === msg.id) {
       setExpandedMsg(null);
@@ -196,6 +203,12 @@ function MainPage() {
                       {it.name}
                     </p>
                     <p className="text-xs text-muted-foreground">{it.added_by_name}</p>
+                    <p className="text-[10px] text-muted-foreground/80 mt-0.5">
+                      {t("added")}: {new Date(it.created_at).toLocaleString()}
+                      {it.status === "purchased" && (it as Item & { purchased_at?: string | null }).purchased_at && (
+                        <> · {t("purchasedAtLabel")}: {new Date((it as Item & { purchased_at?: string | null }).purchased_at as string).toLocaleString()}</>
+                      )}
+                    </p>
                   </div>
                   <button
                     onClick={(e) => {
@@ -213,10 +226,20 @@ function MainPage() {
         </section>
 
         <section className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold flex items-center gap-2 mb-3">
-            <MessageSquare className="w-5 h-5 text-accent" />
-            {t("messages")}
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-accent" />
+              {t("messages")}
+            </h2>
+            {messages.length > 0 && (
+              <button
+                onClick={clearAllMessages}
+                className="text-xs text-destructive hover:underline"
+              >
+                {t("clearAllMessages")}
+              </button>
+            )}
+          </div>
           {messages.length === 0 ? (
             <p className="text-center text-muted-foreground py-6">{t("emptyMessages")}</p>
           ) : (
