@@ -60,6 +60,11 @@ function ReminderPage() {
 
   const defaults = [t("presetReminder")];
 
+  async function deletePreset(id: string) {
+    setPresets((prev) => prev.filter((p) => p.id !== id));
+    await supabase.from("preset_messages").delete().eq("id", id);
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-4 pt-6 space-y-6">
       <header className="flex items-center gap-3">
@@ -95,14 +100,34 @@ function ReminderPage() {
       </section>
 
       <section className="space-y-2">
-        {[...defaults, ...presets.map((p) => p.body)].map((p, i) => (
+        {defaults.map((p, i) => (
           <button
-            key={`${i}-${p}`}
+            key={`d-${i}`}
             onClick={() => setText(p)}
             className="w-full text-start p-4 bg-card rounded-xl border border-border hover:border-accent transition shadow-sm"
           >
             {p}
           </button>
+        ))}
+        {presets.map((p) => (
+          <div
+            key={p.id}
+            className="flex items-center gap-2 bg-card rounded-xl border border-border hover:border-accent transition shadow-sm"
+          >
+            <button
+              onClick={() => setText(p.body)}
+              className="flex-1 text-start p-4"
+            >
+              {p.body}
+            </button>
+            <button
+              onClick={() => deletePreset(p.id)}
+              aria-label={t("delete")}
+              className="w-10 h-10 me-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive flex items-center justify-center shrink-0"
+            >
+              ×
+            </button>
+          </div>
         ))}
       </section>
     </div>
