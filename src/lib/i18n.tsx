@@ -69,6 +69,9 @@ const DICT = {
     pushIosBanner: "כדי לקבל התראות באייפון, הוסיפו את האפליקציה למסך הבית: הקש על שיתוף ואז 'הוסף למסך הבית'",
     pushIosNeedsPwa: "התקינו למסך הבית כדי לאפשר התראות",
     dismiss: "סגור",
+    saveAsPreset: "שמור כהודעה מוכנה",
+    autoReminder: "שלח תזכורת אוטומטית",
+    autoReminderText: "פריטים חדשים נוספו לרשימה",
   },
   en: {
     appName: "Family Cart",
@@ -136,6 +139,9 @@ const DICT = {
     pushIosBanner: "To get notifications on iPhone, add this app to your Home Screen: tap Share, then 'Add to Home Screen'",
     pushIosNeedsPwa: "Install to Home Screen to enable notifications",
     dismiss: "Dismiss",
+    saveAsPreset: "Add as a predefined message",
+    autoReminder: "Send automatic reminder",
+    autoReminderText: "New items were added to the list",
   },
 } as const;
 
