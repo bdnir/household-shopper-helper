@@ -17,6 +17,7 @@ type Item = {
   added_by_member_id: string | null;
   is_private: boolean;
   created_at: string;
+  purchased_at: string | null;
 };
 
 type Message = {
