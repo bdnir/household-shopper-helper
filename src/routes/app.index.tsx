@@ -248,7 +248,7 @@ function MainPage() {
                             .filter(Boolean)
                             .join(", ") || "—"}
                         </span>
-                        {isMine && (
+                        {(isMine || m.isAdmin) && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

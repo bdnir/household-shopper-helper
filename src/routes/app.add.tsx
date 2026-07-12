@@ -29,6 +29,7 @@ function AddItemPage() {
   const [selected, setSelected] = useState<Map<string, boolean>>(new Map());
   const [manual, setManual] = useState("");
   const [manualPrivate, setManualPrivate] = useState(false);
+  const [autoReminder, setAutoReminder] = useState(true);
 
   useEffect(() => {
     if (!m) return;
@@ -90,6 +91,14 @@ function AddItemPage() {
       })),
       { onConflict: "group_id,name,is_private,owner_key" },
     );
+    if (autoReminder) {
+      await supabase.from("messages").insert({
+        group_id: m!.groupId,
+        from_member_id: m!.memberId,
+        from_name: m!.name,
+        body: t("autoReminderText"),
+      });
+    }
     toast.success(`+${entries.length}`);
     navigate({ to: "/app" });
   }
@@ -137,6 +146,17 @@ function AddItemPage() {
           />
           <Label htmlFor="private-item" className="text-sm text-muted-foreground cursor-pointer">
             {t("privateItem")}
+          </Label>
+        </div>
+
+        <div className="mt-2 flex items-center gap-2">
+          <Checkbox
+            id="auto-reminder"
+            checked={autoReminder}
+            onCheckedChange={(c) => setAutoReminder(c === true)}
+          />
+          <Label htmlFor="auto-reminder" className="text-sm text-muted-foreground cursor-pointer">
+            {t("autoReminder")}
           </Label>
         </div>
 
