@@ -72,6 +72,10 @@ const DICT = {
     saveAsPreset: "שמור כהודעה מוכנה",
     autoReminder: "שלח תזכורת אוטומטית",
     autoReminderText: "פריטים חדשים נוספו לרשימה",
+    added: "נוסף",
+    purchasedAtLabel: "נקנה",
+    clearAllMessages: "נקה הודעות",
+    confirmClearAll: "למחוק את כל ההודעות?",
   },
   en: {
     appName: "Family Cart",
@@ -142,6 +146,10 @@ const DICT = {
     saveAsPreset: "Add as a predefined message",
     autoReminder: "Send automatic reminder",
     autoReminderText: "New items were added to the list",
+    added: "Added",
+    purchasedAtLabel: "Purchased",
+    clearAllMessages: "Clear messages",
+    confirmClearAll: "Delete all messages?",
   },
 } as const;
 
