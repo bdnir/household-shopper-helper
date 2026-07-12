@@ -193,7 +193,7 @@ function MainPage() {
                   </span>
                   <div className="flex-1">
                     <p
-                      className={`font-medium flex items-center gap-1 ${it.status === "purchased" ? "line-through" : ""}`}
+                      className={`text-lg font-bold flex items-center gap-1 ${it.status === "purchased" ? "line-through" : ""}`}
                     >
                       {it.is_private && (
                         <Lock
@@ -203,9 +203,8 @@ function MainPage() {
                       )}
                       {it.name}
                     </p>
-                    <p className="text-xs text-muted-foreground">{it.added_by_name}</p>
                     <p className="text-[10px] text-muted-foreground/80 mt-0.5">
-                      {t("added")}: {new Date(it.created_at).toLocaleString()}
+                      {it.added_by_name} {t("addedOn")}: {new Date(it.created_at).toLocaleString()}
                       {it.status === "purchased" && it.purchased_at && (
                         <> · {t("purchasedAtLabel")}: {new Date(it.purchased_at).toLocaleString()}</>
                       )}
