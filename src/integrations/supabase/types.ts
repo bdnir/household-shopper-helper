@@ -202,6 +202,30 @@ export type Database = {
           },
         ]
       }
+      preset_messages: {
+        Row: {
+          body: string
+          created_at: string
+          created_by_member_id: string | null
+          group_id: string
+          id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by_member_id?: string | null
+          group_id: string
+          id?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by_member_id?: string | null
+          group_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           auth: string
