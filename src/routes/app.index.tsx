@@ -206,8 +206,8 @@ function MainPage() {
                     <p className="text-xs text-muted-foreground">{it.added_by_name}</p>
                     <p className="text-[10px] text-muted-foreground/80 mt-0.5">
                       {t("added")}: {new Date(it.created_at).toLocaleString()}
-                      {it.status === "purchased" && (it as Item & { purchased_at?: string | null }).purchased_at && (
-                        <> · {t("purchasedAtLabel")}: {new Date((it as Item & { purchased_at?: string | null }).purchased_at as string).toLocaleString()}</>
+                      {it.status === "purchased" && it.purchased_at && (
+                        <> · {t("purchasedAtLabel")}: {new Date(it.purchased_at).toLocaleString()}</>
                       )}
                     </p>
                   </div>
