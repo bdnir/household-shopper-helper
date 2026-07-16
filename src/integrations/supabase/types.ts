@@ -94,6 +94,7 @@ export type Database = {
           name: string
           phone: string
           role: Database["public"]["Enums"]["member_role"]
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -105,6 +106,7 @@ export type Database = {
           name: string
           phone: string
           role?: Database["public"]["Enums"]["member_role"]
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -116,6 +118,7 @@ export type Database = {
           name?: string
           phone?: string
           role?: Database["public"]["Enums"]["member_role"]
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -314,7 +317,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_group_admin: { Args: { _group_id: string }; Returns: boolean }
+      is_group_member: { Args: { _group_id: string }; Returns: boolean }
     }
     Enums: {
       item_status: "pending" | "purchased"
