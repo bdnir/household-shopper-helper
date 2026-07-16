@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/app/add")({
+export const Route = createFileRoute("/_authenticated/app/add")({
   component: AddItemPage,
 });
 
