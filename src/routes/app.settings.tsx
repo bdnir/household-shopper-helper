@@ -25,7 +25,7 @@ import { toast } from "sonner";
 
 declare const __BUILD_TIME__: string;
 
-export const Route = createFileRoute("/_authenticated/app/settings")({
+export const Route = createFileRoute("/app/settings")({
   component: SettingsPage,
 });
 
