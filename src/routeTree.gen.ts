@@ -11,15 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppReminderRouteImport } from './routes/app.reminder'
+import { Route as AppAddRouteImport } from './routes/app.add'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
-import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
-import { Route as AuthenticatedAppReminderRouteImport } from './routes/_authenticated/app.reminder'
-import { Route as AuthenticatedAppAddRouteImport } from './routes/_authenticated/app.add'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
@@ -33,19 +32,35 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReminderRoute = AppReminderRouteImport.update({
+  id: '/reminder',
+  path: '/reminder',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAddRoute = AppAddRouteImport.update({
+  id: '/add',
+  path: '/add',
+  getParentRoute: () => AppRoute,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
@@ -59,28 +74,6 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppSettingsRoute =
-  AuthenticatedAppSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppReminderRoute =
-  AuthenticatedAppReminderRouteImport.update({
-    id: '/reminder',
-    path: '/reminder',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppAddRoute = AuthenticatedAppAddRouteImport.update({
-  id: '/add',
-  path: '/add',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -94,95 +87,94 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/mcp': typeof McpRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/app': typeof AuthenticatedAppRouteWithChildren
+  '/app/add': typeof AppAddRoute
+  '/app/reminder': typeof AppReminderRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/': typeof AppIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/app/add': typeof AuthenticatedAppAddRoute
-  '/app/reminder': typeof AuthenticatedAppReminderRoute
-  '/app/settings': typeof AuthenticatedAppSettingsRoute
-  '/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/mcp': typeof McpRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/': typeof AuthenticatedIndexRoute
+  '/app/add': typeof AppAddRoute
+  '/app/reminder': typeof AppReminderRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app': typeof AppIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/app/add': typeof AuthenticatedAppAddRoute
-  '/app/reminder': typeof AuthenticatedAppReminderRoute
-  '/app/settings': typeof AuthenticatedAppSettingsRoute
-  '/app': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/mcp': typeof McpRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
-  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/app/add': typeof AppAddRoute
+  '/app/reminder': typeof AppReminderRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/': typeof AppIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/_authenticated/app/add': typeof AuthenticatedAppAddRoute
-  '/_authenticated/app/reminder': typeof AuthenticatedAppReminderRoute
-  '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
-  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/app'
     | '/auth'
     | '/mcp'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
-    | '/app'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/app/add'
     | '/app/reminder'
     | '/app/settings'
     | '/app/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/auth'
     | '/mcp'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
-    | '/'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/app/add'
     | '/app/reminder'
     | '/app/settings'
     | '/app'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
-    | '/_authenticated'
+    | '/'
+    | '/app'
     | '/auth'
     | '/mcp'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
-    | '/_authenticated/app'
-    | '/_authenticated/'
+    | '/app/add'
+    | '/app/reminder'
+    | '/app/settings'
+    | '/app/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
-    | '/_authenticated/app/add'
-    | '/_authenticated/app/reminder'
-    | '/_authenticated/app/settings'
-    | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
   McpRoute: typeof McpRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -207,26 +199,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/app': {
-      id: '/_authenticated/app'
+    '/app': {
+      id: '/app'
       path: '/app'
       fullPath: '/app'
-      preLoaderRoute: typeof AuthenticatedAppRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reminder': {
+      id: '/app/reminder'
+      path: '/reminder'
+      fullPath: '/app/reminder'
+      preLoaderRoute: typeof AppReminderRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/add': {
+      id: '/app/add'
+      path: '/add'
+      fullPath: '/app/add'
+      preLoaderRoute: typeof AppAddRouteImport
+      parentRoute: typeof AppRoute
     }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
@@ -241,34 +254,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/.mcp/list-tools'
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/app/': {
-      id: '/_authenticated/app/'
-      path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/settings': {
-      id: '/_authenticated/app/settings'
-      path: '/settings'
-      fullPath: '/app/settings'
-      preLoaderRoute: typeof AuthenticatedAppSettingsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/reminder': {
-      id: '/_authenticated/app/reminder'
-      path: '/reminder'
-      fullPath: '/app/reminder'
-      preLoaderRoute: typeof AuthenticatedAppReminderRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/add': {
-      id: '/_authenticated/app/add'
-      path: '/add'
-      fullPath: '/app/add'
-      preLoaderRoute: typeof AuthenticatedAppAddRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
     }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
@@ -287,38 +272,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedAppRouteChildren {
-  AuthenticatedAppAddRoute: typeof AuthenticatedAppAddRoute
-  AuthenticatedAppReminderRoute: typeof AuthenticatedAppReminderRoute
-  AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
-  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+interface AppRouteChildren {
+  AppAddRoute: typeof AppAddRoute
+  AppReminderRoute: typeof AppReminderRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppIndexRoute: typeof AppIndexRoute
 }
 
-const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
-  AuthenticatedAppAddRoute: AuthenticatedAppAddRoute,
-  AuthenticatedAppReminderRoute: AuthenticatedAppReminderRoute,
-  AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
-  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppAddRoute: AppAddRoute,
+  AppReminderRoute: AppReminderRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppIndexRoute: AppIndexRoute,
 }
 
-const AuthenticatedAppRouteWithChildren =
-  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
-
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-}
-
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
   McpRoute: McpRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,

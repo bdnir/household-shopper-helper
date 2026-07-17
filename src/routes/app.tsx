@@ -5,7 +5,7 @@ import { getActiveMember } from "@/lib/device";
 import { useI18n } from "@/lib/i18n";
 import { registerPushServiceWorker, subscribeToPush, getPushStatus, isIos, isStandalone } from "@/lib/push";
 
-export const Route = createFileRoute("/_authenticated/app")({
+export const Route = createFileRoute("/app")({
   ssr: false,
   component: AppLayout,
 });
