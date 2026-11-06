@@ -184,20 +184,20 @@ function AddItemPage() {
         {recent.length === 0 ? (
           <p className="text-sm text-muted-foreground">—</p>
         ) : (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-wrap gap-2">
             {recent.map((r) => {
               const on = selected.has(r.name);
               return (
                 <div
                   key={r.id}
-                  className={`relative flex items-center gap-1 px-2 py-2 rounded-lg border-2 transition text-sm ${
+                  className={`relative flex w-fit max-w-full items-center gap-1 px-2 py-2 rounded-lg border-2 transition text-sm ${
                     on
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card hover:border-primary/40"
                   }`}
                 >
                   <div
-                    className="flex-1 cursor-pointer truncate font-medium flex items-center gap-1"
+                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 font-medium"
                     onClick={() => (on ? removeItem(r.name) : addItem(r.name, r.is_private))}
                   >
                     {r.is_private && (
@@ -206,7 +206,7 @@ function AddItemPage() {
                         aria-label={t("privateBadge")}
                       />
                     )}
-                    <span className="truncate">{r.name}</span>
+                    <span className="whitespace-normal [overflow-wrap:anywhere]">{r.name}</span>
                   </div>
                   {on && <span className="text-primary text-xs shrink-0">✓</span>}
                   <button
