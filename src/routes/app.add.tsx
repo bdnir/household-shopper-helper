@@ -104,7 +104,7 @@ function AddItemPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4 pt-6 space-y-6">
+    <div className="max-w-2xl mx-auto p-4 pt-6 pb-20 space-y-6">
       <header>
         <p className="text-xs text-muted-foreground">{m.groupName}</p>
         <h1 className="text-2xl font-bold">{t("addItem")}</h1>
@@ -226,13 +226,15 @@ function AddItemPage() {
         )}
       </section>
 
-      <Button
-        onClick={sendSelected}
-        disabled={selected.size === 0 && !manual.trim()}
-        className="w-full h-12 text-base font-semibold"
-      >
-        {t("sendSelected")} {selected.size > 0 && `(${selected.size})`}
-      </Button>
+      <div className="fixed inset-x-4 bottom-24 z-40 mx-auto max-w-2xl">
+        <Button
+          onClick={sendSelected}
+          disabled={selected.size === 0 && !manual.trim()}
+          className="h-12 w-full rounded-full text-base font-semibold shadow-lg"
+        >
+          {t("sendSelected")} {selected.size > 0 && `(${selected.size})`}
+        </Button>
+      </div>
     </div>
   );
 }
